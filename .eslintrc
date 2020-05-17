@@ -60,5 +60,17 @@
     "prettier/react",
     "plugin:flowtype/recommended"
   ],
-  "plugins": ["react", "flowtype", "emotion", "jsx-a11y"]
+  "plugins": ["react", "flowtype", "emotion", "jsx-a11y"],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,css,md}": [
+      "prettier --write",
+      "yarn lint --fix",
+      "git add"
+    ]
+  }
 }
