@@ -1,15 +1,12 @@
-// @flow
-
 import ACTIONS from 'redux/actionTypes'
 import PROVIDER from 'constants/auth-provider'
 import selectors from 'redux/selectors'
+import userService from 'services/user-service'
 
-import type { ThunkActionType } from 'constants/redux'
-import type { FirebaseAuthType, IdType } from 'constants/firebase'
+// import type { ThunkActionType } from 'constants/redux'
+// import type { FirebaseAuthType, IdType } from 'constants/firebase'
 
-const setShoppingCartOrder = (
-  orderId: ?IdType
-): ThunkActionType<Promise<void>> => async (
+const setShoppingCartOrder = orderId => async (
   dispatch,
   getState,
   { getFirebase }
@@ -28,9 +25,7 @@ const setShoppingCartOrder = (
 // AUTHENTICATION //
 ////////////////////
 
-const signInWithOAuth = (
-  provider: string
-): ThunkActionType<Promise<boolean>> => async (
+const signInWithOAuth = provider => async (
   dispatch,
   getState,
   { getFirebase }
@@ -54,10 +49,7 @@ const signInWithOAuth = (
   }
 }
 
-const signInWithEmail = ({
-  email,
-  password,
-}: $Shape<FirebaseAuthType>): ThunkActionType<Promise<boolean>> => async (
+const signInWithEmail = ({ email, password }) => async (
   dispatch,
   getState,
   { getFirebase }
@@ -73,11 +65,7 @@ const signInWithEmail = ({
   }
 }
 
-const signOut = (): ThunkActionType<Promise<void>> => async (
-  dispatch,
-  getState,
-  { getFirebase }
-) => {
+const signOut = () => async (dispatch, getState, { getFirebase }) => {
   const firebase = getFirebase()
   try {
     await firebase.auth().signOut()
@@ -92,14 +80,13 @@ const signUpWithEmail = ({
   email,
   password,
 }: $Shape<FirebaseAuthType>): ThunkActionType<Promise<boolean>> => async (
-  dispatch,
-  getState,
-  { getFirebase }
+  dispatch
+  // getState,
 ) => {
-  const firebase = getFirebase()
   try {
-    await firebase.auth().createUserWithEmailAndPassword(email, password)
-    dispatch({ type: ACTIONS.SIGNUP_SUCCESS })
+    // await firebase.auth().createUserWithEmailAndPassword(email, password)
+    // throw 'err'
+    // dispatch({ type: ACTIONS.SIGNUP_SUCCESS })
     return true
   } catch (error) {
     dispatch({ type: ACTIONS.SIGNUP_ERROR, error })
