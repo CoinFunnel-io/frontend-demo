@@ -1,6 +1,7 @@
 import PROVIDER from 'constants/auth-provider'
 import ACTIONS from 'redux/actionTypes'
 import selectors from 'redux/selectors'
+import apiMerchantService from 'services/api-merchant-service'
 
 const setShoppingCartOrder = orderId => async (
   dispatch,
@@ -54,9 +55,22 @@ const signInWithEmail = ({ email, password }) => async (
   try {
     await firebase.auth().signInWithEmailAndPassword(email, password)
     dispatch({ type: ACTIONS.LOGIN_SUCCESS })
-    return true
   } catch (error) {
     dispatch({ type: ACTIONS.LOGIN_ERROR, error })
+    return false
+  }
+
+  // API: signing in the API database
+  try {
+    let token = await apiMerchantService.signIn({
+      email,
+      password,
+    })
+    console.log('created token', token)
+    dispatch({ type: ACTIONS.API.SIGNUP_SUCCESS, payload: { token } })
+    return true
+  } catch (error) {
+    dispatch({ type: ACTIONS.API.SIGNUP_ERROR, error })
     return false
   }
 }

@@ -64,7 +64,7 @@ const create = ({ storeName, walletAddress }) => async (
   try {
     let email = JSON.parse(localStorage.getItem('email'))
     let password = JSON.parse(localStorage.getItem('password'))
-    let token = await apiMerchantService.signup({ storeName, email, password })
+    let token = await apiMerchantService.signUp({ storeName, email, password })
     console.log('created token', token)
     dispatch({ type: ACTIONS.API.SIGNUP_SUCCESS, payload: { token } })
     return true
