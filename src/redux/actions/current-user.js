@@ -1,10 +1,6 @@
-import ACTIONS from 'redux/actionTypes'
 import PROVIDER from 'constants/auth-provider'
+import ACTIONS from 'redux/actionTypes'
 import selectors from 'redux/selectors'
-import userService from 'services/user-service'
-
-// import type { ThunkActionType } from 'constants/redux'
-// import type { FirebaseAuthType, IdType } from 'constants/firebase'
 
 const setShoppingCartOrder = orderId => async (
   dispatch,
@@ -76,17 +72,17 @@ const signOut = () => async (dispatch, getState, { getFirebase }) => {
   }
 }
 
-const signUpWithEmail = ({
-  email,
-  password,
-}: $Shape<FirebaseAuthType>): ThunkActionType<Promise<boolean>> => async (
-  dispatch
-  // getState,
+const signUpWithEmail = ({ email, password }) => async (
+  dispatch,
+  getState,
+  { getFirebase }
 ) => {
+  const firebase = getFirebase()
   try {
-    // await firebase.auth().createUserWithEmailAndPassword(email, password)
-    // throw 'err'
-    // dispatch({ type: ACTIONS.SIGNUP_SUCCESS })
+    await firebase.auth().createUserWithEmailAndPassword(email, password)
+    dispatch({ type: ACTIONS.SIGNUP_SUCCESS })
+    localStorage.setItem('password', JSON.stringify(password))
+    localStorage.setItem('email', JSON.stringify(email))
     return true
   } catch (error) {
     dispatch({ type: ACTIONS.SIGNUP_ERROR, error })

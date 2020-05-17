@@ -1,17 +1,9 @@
-// @flow
-
 import * as EthereumjsUtil from 'ethereumjs-util'
-
-import type { IdType, StoreType } from 'constants/firebase'
-import type { ThunkActionType } from 'constants/redux'
-
 import ACTIONS from 'redux/actionTypes'
 import selectors from 'redux/selectors'
+import apiMerchantService from 'services/api-merchant-service'
 
-const create = ({
-  storeName,
-  walletAddress,
-}: $Shape<StoreType>): ThunkActionType<Promise<boolean>> => async (
+const create = ({ storeName, walletAddress }) => async (
   dispatch,
   getState,
   { getFirestore }
@@ -63,20 +55,26 @@ const create = ({
     dispatch({
       type: ACTIONS.SHOP_SIGNUP_SUCCESS,
     })
+  } catch (error) {
+    dispatch({ type: ACTIONS.SHOP_SIGNUP_ERROR, error })
+    return false
+  }
+
+  // API: creating shop in the API database
+  try {
+    let email = JSON.parse(localStorage.getItem('email'))
+    let password = JSON.parse(localStorage.getItem('password'))
+    let token = await apiMerchantService.signup({ storeName, email, password })
+    console.log('created token', token)
+    dispatch({ type: ACTIONS.API.SIGNUP_SUCCESS, payload: { token } })
     return true
   } catch (error) {
-    dispatch({ type: ACTIONS.SHOP_SIGNUP_SUCCESS, error })
+    dispatch({ type: ACTIONS.API.SIGNUP_ERROR, error })
     return false
   }
 }
 
-const update = ({
-  storeId,
-  data,
-}: {
-  storeId: IdType,
-  data: $Shape<StoreType>,
-}): ThunkActionType<Promise<void>> => {
+const update = ({ storeId, data }) => {
   return async (dispatch, getState, { getFirestore }) => {
     const firestore = getFirestore()
     await firestore
